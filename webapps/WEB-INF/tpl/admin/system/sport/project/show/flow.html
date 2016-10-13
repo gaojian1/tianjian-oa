@@ -1,0 +1,117 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>申请单列表</title> #style
+<!-- 监听键盘事件 -->
+<script type="text/javascript" src="$!basePath/framework/js/core/plugin/zframe.keyboard.js"></script>
+
+
+
+
+<head>
+<body class="easyui-layout">
+
+	<div data-options="region:'center',title:'申请单列表'" style="background: #fff;padding-top: 80px" >
+		<div class="order_flow">
+		
+					
+			#if($!{modleList.size()} == 1)
+			
+				<div class="order_flow_wait">
+					<span><p class="name">$!modleList[0].processStr</p>
+						<p>$!modleList[0].audit_time</p></span>
+				</div>
+			#else
+		
+		
+			#foreach($modle in $modleList)
+				#if($!velocityCount == 1)
+							 	<div class="order_flow_left">
+						<span><p class="name">$!modle.processStr</p>
+							<p>$!modle.audit_time</p></span>
+					</div>
+				#end 
+				
+				#if($!velocityCount != 1)
+				 #if($!velocityCount != $!{modleList.size()})
+					 <div class="order_flow_arrive">
+						<span><p class="name">$!modle.processStr</p>
+							<p>$!modle.audit_time</p></span>
+					</div>
+				 #end
+				#end 
+			 
+				 #if( $!{modleList.size()} > 1)
+					#if($!velocityCount == $!{modleList.size()}  )
+					<div class="order_flow_right_arrive">
+						<span><p class="name">$!modle.processStr</p>
+							<p>$!modle.audit_time</p></span>
+					</div>
+					#end 
+				#end 
+			#end
+			#end
+		</div>
+		
+		<br />
+		<br />
+		<style type="text/css">
+table.gridtable {
+	font-family: verdana, arial, sans-serif;
+	font-size: 11px;
+	color: #333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+
+
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+</style>
+		
+		
+		<div  style="margin-top: 80px">
+		<table class="gridtable" width="100%" cellspacing="0" cellpadding="0" id="tableData">
+			<tr>
+				<td>申请类型</td>
+				<td>审批号</td>
+				<td>申请人</td>
+				<td>审批人</td>
+				<td>审批时间</td>
+				<td>操作</td>
+				<td>意见</td>
+			</tr>
+			#foreach($modle in $modleList)
+			<tr>
+				<td>$!modle.sqType</td>
+				<td>$!modle.formNumber</td>
+				<td>$!modle.createUserStr</td>
+				<td>$!modle.auditUserStr</td>
+				<td>$!modle.audit_time</td>
+				<td>$!modle.aduitStatusStr</td>
+				<td>$!modle.reason</td>
+			</tr>
+			#end
+		</table>
+		</div>
+		
+		
+		
+		
+		
+	</div>
+	
+	
+
+
+
+</body>
+</html>
+

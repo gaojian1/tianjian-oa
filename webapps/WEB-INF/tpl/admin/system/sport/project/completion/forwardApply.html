@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>申请竣工</title> #style <!-- 监听键盘事件 -->
+	<script type="text/javascript" src="$!basePath/framework/js/core/plugin/zframe.keyboard.js"></script>
+</head>
+<body>
+	<link href="$!basePath/framework/css/custTable.css" rel="stylesheet" type="text/css" />
+	<script>
+		var winProjectApply = new Windows("project_apply");
+		var projectApply = {
+				initForm : function(){
+					winProjectApply.find('#projectForm').form({   
+	 					url:'$!basePath/admin/sport/completion/apply/projectApply',   
+					    onSubmit: function(){
+							  var files = winProjectApply.find("input[type='file']");
+							  var flag =true;
+							  files.each(function(index){
+								  	console.log(index);
+									var typeName = $(this).attr("name");
+									var fileName = $(this).val();
+									if(fileName.length >0){
+										if(typeName=='picture'){
+											if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(fileName)){
+												var tIndex = index;
+												++tIndex;
+												flag = false;
+												var message = '竣工图片'+tIndex+'只能是图片';
+												top.Dialog.alert("错误",message,"error");
+											}
+											
+										}
+									}
+									
+							   });							 
+							if(flag){
+								return true;
+							}else{
+								return false;
+							}
+						 	
+					    },   
+					    success:function(data){
+					   		var result = jQuery.parseJSON(data);   
+					        if(result.success == true){
+					        	top.Notiy.success("申请成功!");
+					        	winProjectApply.setReturnValue(true);
+					        	winProjectApply.close();
+					        }else{
+					        	top.Dialog.alert("错误",result.error,"error");
+					        }
+					        winProjectApply.find("#ok").linkbutton("reset");
+					    }
+					}); 
+		 		},				
+		 		ok : function(){
+		 			winProjectApply.find('#projectForm').submit();
+		 		},
+		 		cancel : function(){
+		 			winProjectApply.close();
+		 		}
+				
+		}
+		
+		
+		$(function(){
+			projectApply.initForm();
+		});		
+		
+		
+        
+	</script>
+	
+	
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'center',border:false">
+			<form id="projectForm" method="post" enctype="multipart/form-data">
+				<input type ="hidden" name="flowId" value="$!flowId"/>
+				<table width="100%" class="gridtable">
+					<tr>
+						<td colspan="4" align="center"><h1>项目竣工申请</h1></td>
+					</tr>
+					<tr>
+						<td>竣工图片1</td>
+						<td colspan="3"><input class="easyui-filebox" type="file" name="picture" style="width: 90%" data-options="required:true"   /></td>
+					</tr>
+					<tr>
+						<td>竣工图片2</td>
+						<td colspan="3"><input class="easyui-filebox" type="file" name="picture" style="width: 90%" data-options="required:true" /></td>
+					</tr>			
+					<tr>
+						<td>竣工图片3</td>
+						<td colspan="3"><input class="easyui-filebox" type="file" name="picture" style="width: 90%" data-options="required:true"  /></td>
+					</tr>	
+					<tr>
+						<td>竣工审批扫描附件</td>
+						<td colspan="3"><input class="easyui-filebox" type="file" name="file" style="width: 90%" data-options="required:true" onchange="checkPitcure(this)" /></td>
+					</tr>
+					<tr>
+					<td>竣工意见</td>
+						<td colspan="3">
+							<textarea class="easyui-textarea"  name="remark" rows="3" style="width: 94%;"/>
+						</td>
+					</tr>											
+				</table>
+				
+				<table  class="gridtable" width="100%" cellspacing="0" cellpadding="0" id="tableData">
+							<tr>
+								<td>申请类型</td>
+								<td>审批号</td>
+								<td>申请人</td>
+								<td>审批人</td>
+								<td>审批时间</td>
+								<td>操作</td>
+								<td>意见</td>
+							</tr>
+							#foreach($modle in $modleList)
+							<tr>
+								<td>$!modle.sqType</td>
+								<td>$!modle.formNumber</td>
+								<td>$!modle.createUserStr</td>
+								<td>$!modle.auditUserStr</td>
+								<td>$!modle.audit_time</td>
+								<td>$!modle.aduitStatusStr</td>
+								<td>$!modle.reason</td>
+							</tr>
+							#end
+				</table>				
+				
+			</form>
+		</div>
+		<div data-options="region:'south',border:false">
+			<div class="dialog-button">
+				<a id="ok" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="projectApply.ok()">确定</a> <a id="cancel" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)"
+					onclick="projectApply.cancel()">取消</a>
+			</div>
+		</div>
+
+	</div>
+</body>

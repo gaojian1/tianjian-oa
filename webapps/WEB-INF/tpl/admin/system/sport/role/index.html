@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>角色管理</title>
+	#style
+</head>
+<body class="easyui-layout">
+	<script type="text/javascript">
+		var winAdd = new Windows("role_add");
+		var winEdit = new Windows("role_edit");
+		var winAssignRes = new Windows("role_assign_resource");
+		var winUserAdd = new Windows("user_add");
+		var winUserEdit = new Windows("user_edit");
+		var lastSelectRowId = null;
+		$(function(){
+			initDataGrid();//初始化表格
+		//initWindows();//初始化要打开的窗口
+			initToolbar();//初始化工具条
+		});
+		function initDataGrid(){
+			$('#dgRoleList').datagrid({
+				autoRowHeight: false,
+				collapsible:true,
+				url:'$!basePath/admin/sport/role/roleList',
+				sortName: 'id',
+				sortOrder: 'asc',
+				remoteSort: true,
+				border:false,
+				fit:true,
+				idField:'id',
+				singleSelect:true,
+				columns:[[
+					{field:'name',title:'名称',width:120,sortable:true,
+						sorter:function(a,b){ 
+							return (a>b?1:-1);
+						},formatter:function(value,row,index){
+							return highShowSearch($("#dgRoleList"),"name",value);
+						}
+					},
+					{field:'desc',title:'描述',width:220},
+					{field:'status',title:'状态',width:50,formatter:function(value,row,idex){
+						if(value=="0")
+							return "启用";
+						else if(value=="1")
+							return "<span style='color:red;'>禁用<span>";
+					}}
+				]],
+				pagination:true,
+				rownumbers:true,
+				toolbar:'#dgRoleList-toolbar',
+				onRowContextMenu:function(e,rowindex,rowData){
+					rowContentMenuShowHandler(e,rowindex,rowData,"dgRoleList","dgRoleList_rowContextMenu");
+				},
+				onDblClickRow:function(rowindex,rowdata){
+					winEdit.windows({href:"$!basePath/admin/role/edit/"+rowdata.id});
+					winEdit.windows("open");
+				},
+				onSelect:function(rowindex,rowdata){
+					$("#dgOptionalUserList").datagrid("reload",{roleId:rowdata.id});
+					$("#dgRoleUserList").datagrid("reload",{roleId:rowdata.id});
+					lastSelectRowId = rowdata.id;
+				},
+				onLoadSuccess : function(){
+					DataGridUtil.initDataGridColumn("dgRoleList");
+				},
+				onHeaderContextMenu: function(e,field){
+					e.preventDefault();
+					//创建表头右键菜单
+					DataGridUtil.createHeadContextMenu("dgRoleList");
+					//显示表头右键菜单
+					DataGridUtil.showHeadContextMenu("dgRoleList",e);
+				}
+			});
+			$("#dgOptionalUserList").datagrid({
+				autoRowHeight: false,
+				url:'$!basePath/admin/sport/role/optionalUserListForRole',
+				sortName: 'id',
+				sortOrder: 'asc',
+				remoteSort: true,
+				border:false,
+				fit:true,
+				idField:'id',
+				singleSelect:false,
+				frozenColumns:[[
+	                {field:'ck',checkbox:true},
+	                {title:'序号',field:'id',hidden:true}
+				]],
+				columns:[[
+					{field:'loginName',title:'登录名',width:100,sortable:true,
+						sorter:function(a,b){
+							return (a>b?1:-1);
+						},formatter:function(value,row,index){
+							return highShowSearch($("#dgOptionalUserList"),"loginName",value);
+						}
+					},
+					{field:'realName',title:'姓名',width:100,sortable:true,formatter:function(value,row,index){
+							return highShowSearch($("#dgOptionalUserList"),"realName",value);
+					}}
+				]],
+				pagination:true,
+				rownumbers:true,
+				toolbar:'#dgOptionalUserList-toolbar',
+				onLoadSuccess:function(data){
+					var rowCount = $("#dgOptionalUserList").datagrid("getRows").length;
+					if(rowCount == 0){
+						$("#btnAddUserToRole").menubutton("disable");
+					}else{
+						$("#btnAddUserToRole").menubutton("enable");
+					}
+				}
+			});
+			$("#dgRoleUserList").datagrid({
+				autoRowHeight: false,
+				url:'$!basePath/admin/sport/role/roleUserListForRole',
+				sortName: 'id',
+				sortOrder: 'asc',
+				remoteSort: true,
+				border:false,
+				fit:true,
+				idField:'id',
+				singleSelect:false,
+				frozenColumns:[[
+	                {field:'ck',checkbox:true},
+	                {title:'序号',field:'id',hidden:true}
+				]],
+				columns:[[
+					{field:'loginName',title:'登录名',width:100,sortable:true,
+						sorter:function(a,b){
+							return (a>b?1:-1);
+						},formatter:function(value,row,index){
+							return highShowSearch($("#dgRoleUserList"),"loginName",row.user.loginName);
+						}
+					},
+					{field:'realName',title:'姓名',width:100,sortable:true,formatter:function(value,row,index){
+							return highShowSearch($("#dgRoleUserList"),"realName",row.user.realName);
+					}}
+				]],
+				pagination:true,
+				rownumbers:true,
+				toolbar:'#dgRoleUserList-toolbar',
+				onLoadSuccess:function(data){
+					var rowCount = $("#dgRoleUserList").datagrid("getRows").length;
+					if(rowCount == 0){
+						$("#btnDeleteUserFromRole").linkbutton("disable");
+					}else{
+						$("#btnDeleteUserFromRole").linkbutton("enable");
+					}
+				}
+			});
+			var pager1 = $("#dgOptionalUserList").datagrid("getPager");
+			pager1.pagination({
+				showPageList:false,
+				showRefresh:false,
+				displayMsg:"{from}至{to},共{total}"
+			});
+			var pager2 = $("#dgRoleUserList").datagrid("getPager");
+			pager2.pagination({
+				showPageList:false,
+				showRefresh:false,
+				displayMsg:"{from}至{to},共{total}"
+			});
+		}
+		function initToolbar(){
+			$("#btnDeleteUserFromRole").click(function(){
+				var dg1 = $("#dgOptionalUserList");
+				var dg2 = $("#dgRoleUserList");
+				var selectRows = dg2.datagrid("getSelections");
+				if(selectRows.length>0){
+					var userIds = new Array();
+					$.each(selectRows,function(i,row){
+						userIds.push(row.id);
+					});
+					$.post("$!basePath/admin/sport/role/doAssignUserForDelete",{roleid:lastSelectRowId,userIds:userIds.toString()},function(data){
+						if(data.NoChanges == true){
+							top.Notiy.info("您未做任何修改!");
+						}else if(data.success == true){
+							top.Notiy.success("移除用户成功!");
+							dg1.datagrid("reload");
+							dg2.datagrid("reload");
+						}else{
+							top.Dialog.error(data.error);
+						}
+					},"json");
+				}else{
+					top.Notiy.warning("请先选择要移除的用户!");
+				}
+			});
+			
+			
+		}
+		
+		
+		function doSearch(v,n){
+			doDataGridSearch("dgRoleList",n,v);
+		}
+		function doSearch1(v,n){
+			doDataGridSearch("dgOptionalUserList",n,v);
+		}
+		function doSearch2(v,n){
+			doDataGridSearch("dgRoleUserList",n,v);
+		}
+		function addUserToRole(item){
+			if(item.id == "copy"){
+				copyUserToRole();
+			} 
+		}
+		function copyUserToRole(){
+			var dg1 = $("#dgOptionalUserList");
+			var dg2 = $("#dgRoleUserList");
+			var selectRowss = dg1.datagrid("getSelections");
+			if(selectRowss.length>0){
+				var userIds = new Array();
+				$.each(selectRowss,function(i,row){
+					userIds.push(row.id);
+				});
+				$.post("$!basePath/admin/sport/role/doAssignUserForAddCopy",{roleid:lastSelectRowId,userIds:userIds.toString()},function(data){
+					if(data.success){
+						top.Notiy.success("添加用户到角色成功!");
+						dg1.datagrid("reload");
+						
+						dg2.datagrid("reload");
+					}else{
+						top.Dialog.error(data.error);
+					}
+				},"json");
+			}else{
+				top.Notiy.warning("请先选择要添加的用户!");
+			}
+			dg1.datagrid("clearSelections");
+			dg2.datagrid("clearSelections");
+		}
+	</script>
+	<!-- 角色列表 -->
+	<div id="centerDiv" data-options="region:'center',border:true" style="border-right:0px;">
+		<table id="dgRoleList"></table>
+	</div>
+	<!-- 右边待选资源按钮 -->
+	 <div data-options="region:'east',title:'编辑用户列表',iconCls:'icon-user-edit',border:true,headerCls:'headStyle'" style="width:300px;background:#fff;margin-bottom:1px;">
+		<div id="tt" class="easyui-tabs" data-options="fit:true,border:false,tools:[{iconCls:'icon-user-add',handler:function(){winUserAdd.open();}}]">  
+		    <div title="已拥有">
+		    	<table id="dgRoleUserList"></table>
+		    </div> 
+		    <div title="可添加">
+		       <table id="dgOptionalUserList"></table>
+		    </div>  
+		</div>  
+	 </div>
+	<!-- 工具条 -->
+    <div id="dgRoleList-toolbar" style="padding:2px 0;" class="datagrid-toolbar">
+		<table cellpadding="0" cellspacing="0" style="width:100%">
+			<tr>
+			<!-- 
+				<td style="padding-left:2px">
+					<a id="btnAdd" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-role-add',plain:true" style="float: left;">新增</a>
+					<a id="btnEdit" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-role-edit',plain:true" style="float: left;">修改</a>
+					<a id="btnRemove" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-role-delete',plain:true" style="float: left;">删除</a>
+					<div class="datagrid-btn-separator"></div>
+					<a id="btnUnLock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" style="float: left;">启用</a>
+					<a id="btnLock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-unlock',plain:true" style="float: left;">禁用</a>
+					<div class="datagrid-btn-separator"></div>
+					<a id="btnAssignRes" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-res-add',plain:true" style="float: left;">分配权限</a>
+					<a id="btnExportExcel" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-export-excel',plain:true" style="float: left;">导出Excel</a>
+				</td>
+				 
+				<td style="text-align:right;padding-right:2px">
+					<input id="ss" style="width:220px;" class="easyui-searchbox" data-options="searcher:doSearch,prompt:'请输入查询内容',menu:'#ss_mm'"></input>
+					<div id="ss_mm" style="width:80px;">
+						<div data-options="name:'id'">序号</div>
+						<div data-options="name:'name'">名称</div>
+					</div>
+				</td>
+				-->
+			</tr>
+		</table>
+	</div>
+	<div id="dgOptionalUserList-toolbar" style="padding:2px 0;" class="datagrid-toolbar">
+		<table cellpadding="0" cellspacing="0" style="width:100%">
+			<tr>
+				<td>
+					<a id="btnAddUserToRole" href="javascript:void(0)" class="easyui-menubutton" data-options="menu:'#saveType',iconCls:'icon-save',plain:true">添加选中</a>
+					<div id="saveType" style="width: 100px;" data-options="onClick:addUserToRole">
+					    <div id="copy" data-options="iconCls:'icon-user-add'">添加角色</div>  
+					</div>
+				</td>
+				<td style="text-align:right;padding-right:2px">
+					<input id="ss1" style="width:200px;" class="easyui-searchbox" data-options="searcher:doSearch1,prompt:'请输入查询内容',menu:'#ss_mm_1'"></input>
+					<div id="ss_mm_1" style="width:80px;">
+						<div data-options="name:'id'">序号</div>
+						<div data-options="name:'loginName'">登录名</div>
+						<div data-options="name:'realName'">用户名</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="dgRoleUserList-toolbar" style="padding:2px 0;" class="datagrid-toolbar">
+		<table cellpadding="0" cellspacing="0" style="width:100%">
+			<tr>
+				<td style="padding-left:2px">
+					<a id="btnDeleteUserFromRole" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" style="float: left;">移除选中</a>
+				</td>
+				<td style="text-align:right;padding-right:2px">
+					<input id="ss2" style="width:200px;" class="easyui-searchbox" data-options="searcher:doSearch2,prompt:'请输入查询内容',menu:'#ss_mm_2'"></input>
+					<div id="ss_mm_2" style="width:80px;">
+						<div data-options="name:'id'">序号</div>
+						<div data-options="name:'loginName'">登录名</div>
+						<div data-options="name:'realName'">用户名</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<!-- 右键菜单 
+	<div id="dgRoleList_rowContextMenu" data-options="onClick:rowContentMenuClickHandler" class="easyui-menu" style="width:120px;">
+		<div name="select" data-options="iconCls:'icon-ok'">选中</div>
+		<div name="edit" data-options="iconCls:'icon-role-edit'" with="btnEdit">修改</div>
+		<div name="assignRes" data-options="iconCls:'icon-res-add'" with="btnAssignRes">分配权限</div>
+		<div name="remove" data-options="iconCls:'icon-user-delete'" with="btnRemove">删除此角色</div>
+		<div name="removeSelected" data-options="iconCls:'icon-user-delete'" with="btnRemove">删除选中角色</div>
+	</div>
+	-->
+</body>
+</html>

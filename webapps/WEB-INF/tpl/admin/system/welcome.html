@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>系统首页</title> #style
+	<link rel="stylesheet" type="text/css" href="$!basePath/framework/css/easyui/portal.css" />
+	<script type="text/javascript" src="$!basePath/framework/js/core/zframe.portal.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			initWindows();
+			initDataGird();
+			initToolbars();
+			$('#desktopPortal').portal({
+				border : false
+			});
+		});
+		function initDataGird() {
+
+		}
+		function initWindows() {
+
+		}
+		function initToolbars() {
+			$("#btnZhToEn").click(function() {
+				var zh = $("#txtChinese").val();
+				var en = $("#txtEnglish");
+				if (jQuery.trim(zh) == "") {
+					top.Notiy.warning("请输入中文后点击下箭头翻译");
+					return;
+				}
+				$(this).linkbutton({
+					iconCls : "icon-loading"
+				});
+				jQuery.post("$!basePath/admin/index/translate", {
+					type : "zh",
+					val : zh
+				}, function(data) {
+					en.val(data);
+					$("#btnZhToEn").linkbutton({
+						iconCls : "icon-down"
+					});
+				});
+			});
+			$("#btnEnToZh").click(function() {
+				var en = $("#txtEnglish").val();
+				var zh = $("#txtChinese");
+				if (jQuery.trim(en).length == 0) {
+					top.Notiy.warning("请输入英文后点击上箭头翻译");
+					return;
+				}
+				$(this).linkbutton({
+					iconCls : "icon-loading"
+				});
+				jQuery.post("$!basePath/admin/index/translate", {
+					type : "en",
+					val : en
+				}, function(data) {
+					zh.val(data);
+					$("#btnEnToZh").linkbutton({
+						iconCls : "icon-up"
+					});
+				});
+			});
+			$("#btnClear").click(function() {
+				$("#txtEnglish").val("");
+				$("#txtChinese").val("");
+			});
+		}
+	</script>
+</head>
+<body class="easyui-layout">
+	<div region="center" border="false" data-options="fit:true">
+		<div align="center" style="margin-top: 100px">
+			<font color="#D2691E"><h1>
+					$!UserName,您好 <br />欢迎使用上海市社区公共体育设施信息化管理系统
+				</h1></font>
+		</div>
+
+	</div>
+</body>
+</html>

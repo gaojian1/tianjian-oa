@@ -1,0 +1,248 @@
+<!-- 2016年度  市政府实事项目  百姓健身步道  建设申报表 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>2016年度 市政府实事项目 百姓健身步道 建设申报表</title> #style
+</head>
+<body>
+	<style type="text/css">
+.tdClass {
+	text-align: right
+}
+
+table.gridtable {
+	font-family: verdana, arial, sans-serif;
+	font-size: 11px;
+	color: #333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+</style>
+	<script type="application/javascript">
+	
+	
+	var fileSize=0;
+	var winProjectAdd = new Windows("project_edit");
+	var projectAdd = {
+			initForm : function(){
+				winProjectAdd.find('#projectForm').form({   
+ 					url:'$!basePath/admin/sport/project/updateProject',   
+				    onSubmit: function(){
+				    	var pass = winProjectAdd.find('#projectForm').form("validate");
+				    	if(pass){
+				    		if(fileSize > 30720)
+				    		{
+				    			top.Dialog.alert("错误","附件过大不能大于30MB","error");
+				    			return false;
+				    		}else{
+				    			winProjectAdd.find("#ok").linkbutton("loading");
+				    		}
+				    		
+				    	}
+				    	return pass; 
+				    },   
+				    success:function(data){
+				   		var result = jQuery.parseJSON(data);   
+				        if(result.success == true){
+				        	top.Notiy.success("申请成功!");
+				        	winProjectAdd.setReturnValue(true);
+				        	winProjectAdd.close();
+				        }else{
+				        	top.Dialog.alert("错误",result.error,"error");
+				        }
+				        winProjectAdd.find("#ok").linkbutton("reset");
+				    }
+				}); 
+	 		},				
+	 		ok : function(){
+	 			winProjectAdd.find('#projectForm').submit();
+	 		},
+	 		cancel : function(){
+	 			winProjectAdd.close();
+	 		}
+			
+	}
+
+
+	$(function(){
+		projectAdd.initForm();
+	   $.extend($.fn.validatebox.defaults.rules, {
+	        checkNum: {
+	            validator: function(value, param) {
+	                return /^([0-9]+)$/.test(value);
+	            },
+	            message: '请输入整数'
+	        },
+	        checkFloat: {
+	            validator: function(value, param) {
+	                return /^[+|-]?([0-9]+\.[0-9]+)|[0-9]+$/.test(value);
+	            },
+	            message: '请输入合法数字'
+	        }
+	    });
+		});
+
+
+	function filesize(ele){
+		fileSize = (ele.files[0].size / 1024).toFixed(2);
+	}
+	</script>
+
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'center',border:false">
+			<form id="projectForm" method="post"  enctype="multipart/form-data">
+				<!-- 表单类型 -->
+				<input type="hidden" name="flowId" value="$!applicationflow.id" /> <input type="hidden" name="flowDetailId" value="$!applicationflowDetail.id" />
+				<table width="100%" class="gridtable">
+					<tr>
+						#if($!show == 'open')
+						<td colspan="3" align="center"><h1>2016年度 市政府实事项目 百姓健身步道 建设申报表</h1></td>
+						<td><a id="ok" class="easyui-linkbutton" href="$!basePath/admin/sport/project/download/$!applicationflow.id">下载附件</a></td> #else
+						<td colspan="4" align="center"><h1>2016年度 市政府实事项目 百姓健身步道 建设申报表</h1></td> #end
+					</tr>
+					<tr>
+						<td>区域</td>
+						<td><input class="easyui-validatebox"  data-options="required:true" name="area_str" value="$!areastr" ></input></td>
+						<td>申请时间</td>
+						<td><input class="easyui-datebox"  data-options="required:true" name="create_time_str" value="$!applicationflow.create_time"></input></td>
+					</tr>
+					<tr>
+						<td colspan="4"><h4>建设单位</h4></td>
+					</tr>
+					<tr>
+						<td class="tdClass">百姓健身步道（全称）</td>
+						<td><input class="easyui-validatebox"  type="text" name="project_name" value="$!applicationflowDetail.project_name" maxlength="20" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">百姓健身步道选址（详细地名或路名）</td>
+						<td><input class="easyui-validatebox"  type="text" name="address" value="$!applicationflowDetail.address" data-options="required:true,validType:'minLength[2]'" /></td>
+					</tr>
+
+					<tr>
+						<td class="tdClass">建设工程所属街道(乡镇)</td>
+						<td colspan="3"><input class="easyui-validatebox"  type="text" name="town" value="$!applicationflowDetail.town" data-options="required:true,validType:'minLength[2]'" style="width: 94%;" /></td>
+					</tr>
+					<tr>
+						<td class="tdClass">建设（街镇）单位（联系人）</td>
+						<td><input class="easyui-validatebox"  type="text" name="contact_name" value="$!applicationflowDetail.contact_name" maxlength="20" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">建设（街镇）单位联系人 （电话号码）</td>
+						<td><input class="easyui-validatebox"  type="text" name="contact_phone" value="$!applicationflowDetail.contact_phone" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td>
+					</tr>
+					<tr>
+						<td colspan="4"><h4>设施内容</h4></td>
+					</tr>
+
+					<tr>
+						<td colspan="1">其它配套设施</td>
+						<td colspan="3"><input class="easyui-validatebox"  type="text" name="ancillary_content" value="$!applicationflowDetail.ancillary_content" maxlength="20" data-options="required:true" style="width: 94%;" /></td>
+					</tr>
+
+					<tr>
+						<td class="tdClass">百姓健身步道建设长度（必须300米以上）</td>
+						<td><input class="easyui-validatebox"  type="text" name="trails_length" value="$!applicationflowDetail.trails_length" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td class="tdClass">百姓健身步道建设平均宽度（单项1.2米以上）</td>
+						<td><input class="easyui-validatebox"  type="text" name="trails_width" value="$!applicationflowDetail.trails_width" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+					</tr>
+
+					<tr>
+						<td colspan="4"><h4>资金落实</h4></td>
+					</tr>
+					<tr>
+						<td colspan="2">百姓健身步道总预算（包括市局认可的配套设施建设）（万元）</td>
+						<td colspan="2"><input class="easyui-validatebox"  type="text" name="overall_budget" value="$!applicationflowDetail.overall_budget" maxlength="20" data-options="required:true,validType:'checkFloat'"
+							style="width: 90%" /></td>
+					</tr>
+					<tr>
+						<td colspan="4"><h3>涉及该项目预算落实情况（万元）</h3></td>
+					</tr>
+					<tr>
+						<td>区县体育局</td>
+						<td>街道（乡镇）</td>
+						<td colspan="2">其它</td>
+					</tr>
+					<tr>
+						<td><input class="easyui-validatebox"  type="text" name="county_budget" value="$!applicationflowDetail.county_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td><input class="easyui-validatebox"  type="text" name="street_budget" value="$!applicationflowDetail.street_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td colspan="2"><input class="easyui-validatebox"  type="text" name="other_budget" value="$!applicationflowDetail.other_budget" maxlength="20" data-options="required:true,validType:'checkFloat'"
+							style="width: 90%" /></td>
+					</tr>
+
+					<tr>
+						<td colspan="4"><h4>相关情况</h4></td>
+					</tr>
+					<tr>
+						<td class="tdClass">拟进场开工月份</td>
+						<td><input class="easyui-datebox"  name="start_date_str" value="$!applicationflowDetail.start_date" data-options="required:true" /></td>
+						<td class="tdClass">拟竣工开放月份</td>
+						<td><input class="easyui-datebox"  name="completed_date_str" value="$!applicationflowDetail.completed_date" data-options="required:true" /></td>
+					</tr>
+					<tr>
+						<td class="tdClass">管理单位（全称）</td>
+						<td><input class="easyui-validatebox"  type="text" name="management_unit" value="$!applicationflowDetail.management_unit" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">年度管理经费（万元）</td>
+						<td><input class="easyui-validatebox"  type="text" name="operating_charges" value="$!applicationflowDetail.operating_charges" maxlength="5" data-options="required:true,validType:'checkNum'" /></td>
+					</tr>
+					<tr>
+						<td class="tdClass">意向施工单位（全称）</td>
+						<td colspan="3"><input class="easyui-validatebox"  type="text" name="intent_company" value="$!applicationflowDetail.intent_company" maxlength="200" data-options="required:true,validType:'minLength[2]'"
+							style="width: 90%" /></td>
+					</tr>
+					<tr>
+						<td>纸质扫描文件上传<br />(多个文件请使用压缩工具压缩并上传)
+						</td>
+						<td colspan="3"><input class="easyui-filebox" type="file" name="file" style="width: 90%" data-options="required:true" onchange="filesize(this)" /></td>
+					</tr>
+
+
+					<tr>
+						<td colspan="4"><h4>备注</h4></td>
+					</tr>
+					<tr>
+						<td colspan="4"><textarea class="easyui-textarea"  name="remark" rows="3" style="width: 94%;">$!applicationflow.remark</textarea></td>
+					</tr>
+					
+					
+
+					<tr>
+						<td colspan="4" style="font-size: 15px">
+							<div>附：</div> <br />
+							<div>
+								<span>建设申报资料：</span> <span> 百姓健身步道施工组织方案、施工合同、施工单位建设资质证明和工程预算书请各一式二份；区县体育局须申报资料 齐全，经群体处审核及踏勘通过后，下达《工程建设同意书》，方可开工建设。 </span>
+							</div> <br />
+							<div>
+								<span>竣工申报资料：</span> <span> 百姓健身步道工程建设施工更改签单、步道塑胶面层材料专业部门质检报告、工程监理报告、竣工验收单（包括竣工 图纸）、工程结算报告、工程造价审计书和该设施建成后全景彩色照片各一式二份。 </span>
+							</div> <br />
+							<div>
+								<span>开放管理资料：</span> <span> 《建设单位（街镇或社区文化活动中心）开放管理和维护的承诺书（原件）》，主要内容须包括制度、人员和维修经费 三落实，并加盖公章予以确认。 </span>
+							</div>
+						</td>
+					</tr>					
+					
+				</table>
+			</form>
+		</div>
+		<div data-options="region:'south',border:false">
+			<div class="dialog-button">
+				<a id="ok" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="projectAdd.ok()">确定</a> <a id="cancel" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)"
+					onclick="projectAdd.cancel()">取消</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

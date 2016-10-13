@@ -1,0 +1,263 @@
+<!-- 新建社区健身苑点 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>上海市市民益智健身苑点</title> #style
+</head>
+<body>
+	<style type="text/css">
+.tdClass {
+	text-align: right
+}
+
+table.gridtable {
+	font-family: verdana, arial, sans-serif;
+	font-size: 11px;
+	color: #333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+</style>
+
+	<script type="application/javascript">
+		
+		
+		var fileSize=0;
+		var winProjectAdd = new Windows("project_add");
+		var projectAdd = {
+				initForm : function(){
+					winProjectAdd.find('#projectForm').form({   
+	 					url:'$!basePath/admin/sport/project/addProject',   
+					    onSubmit: function(){
+					    	var pass = winProjectAdd.find('#projectForm').form("validate");
+					    	if(pass){
+					    		if(fileSize > 30720)
+					    		{
+					    			top.Dialog.alert("错误","附件过大不能大于30MB","error");
+					    			return false;
+					    		}else{
+					    			winProjectAdd.find("#ok").linkbutton("loading");
+					    		}
+					    	
+					    	}
+					    	return pass; 
+					    },   
+					    success:function(data){
+					   		var result = jQuery.parseJSON(data);   
+					        if(result.success == true){
+					        	top.Notiy.success("申请成功!");
+					        	winProjectAdd.setReturnValue(true);
+					        	winProjectAdd.close();
+					        }else{
+					        	top.Dialog.alert("错误",result.error,"error");
+					        }
+					        winProjectAdd.find("#ok").linkbutton("reset");
+					    }
+					}); 
+		 		},				
+		 		ok : function(){
+		 			winProjectAdd.find('#projectForm').submit();
+		 		},
+		 		cancel : function(){
+		 			winProjectAdd.close();
+		 		}
+				
+		}
+	
+		$(function(){
+			projectAdd.initForm();
+		   $.extend($.fn.validatebox.defaults.rules, {
+		        checkNum: {
+		            validator: function(value, param) {
+		                return /^([0-9]+)$/.test(value);
+		            },
+		            message: '请输入整数'
+		        },
+		        checkFloat: {
+		            validator: function(value, param) {
+		                return /^[+|-]?([0-9]+\.[0-9]+)|[0-9]+$/.test(value);
+		            },
+		            message: '请输入合法数字'
+		        }
+		    });
+  		});
+	
+		function filesize(ele){
+			fileSize = (ele.files[0].size / 1024).toFixed(2);
+		}
+			
+		
+	
+	
+	</script>
+
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'center',border:false">
+			<form id="projectForm" method="post" enctype="multipart/form-data">
+				<!-- 表单类型 -->
+				<input type="hidden" name="at_id" value="7" />
+
+				<table width="100%" class="gridtable">
+					<tr>
+						<td colspan="5" align="center"><h1>2017年度  上海市  市民益智健身苑点  建设  申报（初审）表</h1></td>
+					</tr>
+					<tr>
+						<td>区域</td>
+						<td><input class="easyui-validatebox" data-options="required:true" name="area_str" value="$!areastr"></input></td>
+						<td>填表日期</td>
+						<td colspan="2"><input class="easyui-datebox" data-options="required:true" name="create_time_str" value="$!nowdate"></input></td>
+					</tr>
+					<tr>
+						<td colspan="5"><h4>建设单位</h4></td>
+					</tr>
+					<tr>
+						<td class="tdClass">市民益智健身苑点（全称）</td>
+						<td><input class="easyui-validatebox" type="text" name="project_name" maxlength="20" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">市民益智健身苑点选址</br>（详细路名和门牌号码）</td>
+						<td colspan="2"><input class="easyui-validatebox" type="text" name="address" data-options="required:true,validType:'minLength[2]'" /></td>
+					</tr>
+
+					<tr>
+						<td class="tdClass">所属街镇(社区文化活动中心)</td>
+						<td colspan="4"><input class="easyui-validatebox" type="text" name="town" data-options="required:true,validType:'minLength[2]'" style="width: 94%;" /></td>
+					</tr>
+					<tr>
+						<td class="tdClass">建设（街镇分管）单位（联系人）</td>
+						<td><input class="easyui-validatebox" type="text" name="contact_name" maxlength="20" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">建设（街镇分管）单位联系人（电话号码）</td>
+						<td colspan="2"><input class="easyui-validatebox" type="text" name="contact_phone" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td>
+					</tr>
+					<tr>
+						<td colspan="5"><h4>设施内容</h4></td>
+					</tr>
+					<tr>
+						<td colspan="1">市民益智健身苑点建设（其它配套设施）</td>
+						<td colspan="4"><input class="easyui-validatebox" type="text" name="ancillary_content" maxlength="20" data-options="required:true" style="width: 94%;" /></td>
+					</tr>
+					<tr>
+						<td colspan="2">达标：苑点活动总面积须150/70平方米以上<br />（填实际申报面积数）
+						</td>
+						<td colspan="2">达标：健身苑配置健身器械须15以上<br />（填实际申报件数）
+						</td>
+						<td>达标：健身点配置健身器械须8以上<br />（填实际申报件数）
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2"><input class="easyui-validatebox" type="text" name="total_area" maxlength="20" data-options="required:true" style="width: 94%;" /></td>
+						<td colspan="2"><input class="easyui-validatebox" type="text" name="act_fitneseqp" maxlength="20" data-options="required:true" /></td>
+						<td><input class="easyui-validatebox" type="text" name="district_facility_qty" maxlength="20" data-options="required:true" /></td>
+					</tr>
+					<tr>
+						<td colspan="5"><h4>资金落实</h4></td>
+					</tr>
+					<tr>
+						<td colspan="1">总预算：（包括其它配套设施建设项目）（万元）</td>
+						<td colspan="4"><input class="easyui-validatebox" type="text" name="overall_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" style="width: 90%" /></td>
+					</tr>
+					<tr><td colspan="5">该项目采购预算落实情况（万元）</td></tr>
+					<tr>
+						<td>区县体育局</td>
+						<td>街道（乡镇）</td>
+						<td>甲方建设单位</td>
+						<td colspan="2">其它</td>
+					</tr>
+					<tr>
+						<td><input class="easyui-validatebox" type="text" name="county_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td><input class="easyui-validatebox" type="text" name="street_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td><input class="easyui-validatebox" type="text" name="company_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td colspan="2"><input class="easyui-validatebox" type="text" name="other_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" style="width: 90%" /></td>
+					</tr>
+
+					<tr>
+						<td colspan="5"><h4>相关情况</h4></td>
+					</tr>
+					<tr>
+						<td class="tdClass">拟开始安装器材（年月）</td>
+						<td><input class="easyui-datebox" name="obj3" data-options="required:true" /></td>
+						<td class="tdClass">拟建设竣工开放（年月）</td>
+						<td colspan="2"><input class="easyui-datebox" name="obj4" data-options="required:true" /></td>
+					</tr>
+					<tr>
+						<td class="tdClass">健身器材采购意向单位（全称）</td>
+						<td><input class="easyui-validatebox" type="text" name="intent_company" maxlength="200" data-options="required:true,validType:'minLength[2]'" style="width: 90%" /></td>
+						<td class="tdClass">开放管理单位（全称）</td>
+						<td colspan="2"><input class="easyui-validatebox" type="text" name="management_unit" maxlength="5" data-options="required:true" style="width: 90%" /></td>
+					</tr>
+					<!-- <tr>
+						<td>纸质扫描文件上传<br />(多个文件请使用压缩工具压缩并上传)
+						</td>
+						<td colspan="4"><input class="easyui-filebox" type="file" name="file" style="width: 90%" data-options="required:true" onchange="filesize(this)" /></td>
+					</tr> -->
+					<tr>
+						<td colspan="5"><h4>备注</h4></td>
+					</tr>
+					<tr>
+						<td colspan="5"><textarea class="easyui-textarea" name="remark" rows="3" style="width: 96%;"></textarea></td>
+					</tr>
+
+					<tr>
+						<td colspan="5"><h3>审核意见</h3></td>
+					</tr>
+					<tr>
+						<td>建设单位（街镇或社区文化活动中心）<br/>单位申报意见</td>
+						<td><input type="radio" name="swsbyj" value="0" checked="checked" />同意<input type="radio" name="swsbyj" value="1" />不同意</td>
+						<td>区县体育局（管理或指导中心）<br/>初审意见：</td>
+						<td><input type="radio" name="csyj" value="0" checked="checked" />同意 <input type="radio" name="csyj" value="1" />不同意</td>
+					</tr>
+					<tr>
+						<td>市体育局群体处审核意见</td>
+						<td colspan="4"><textarea class="easyui-textarea" name="obj1" rows="3" style="width: 94%;"></textarea></td>
+					</tr>
+					<tr>
+						<td colspan="5" style="font-size: 15px">
+							<div>附：</div><br/>
+							<div>
+								<span>建设申报资料：</span> <span> 	《上述申报表各栏填好后加盖公章》和《市民健身苑点建设健身器材配置价目表》各一份；并经区体育局踏勘通过
+                   后，方可办理器材采购手续。</span>
+							</div> <br />
+							<div>
+								<span>竣工审核资料：</span> <span>	《市民益智健身苑点健身器材采购合同》复印件、《健身器材专业部门质检报告》复印件、《审计报告（原件）》各一份。
+以及健身苑点建成后全景彩色照片（图片）一组。</span>
+							</div> <br />
+							<div>
+								<span>开放管理资料：</span> 
+								<span>
+									《建设单位（街镇或社区文化活动中心）开放管理和维护的承诺书（原件）》一份，主要内容须包括制度、人员和
+	               器材维修经费落实，并加盖公章予以确认（一份）。
+								</span>
+							</div>
+						</td>
+					</tr>
+
+
+				</table>
+			</form>
+		</div>
+		<div data-options="region:'south',border:false">
+			<div class="dialog-button">
+				<a id="ok" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="projectAdd.ok()">确定</a> <a id="cancel" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)"
+					onclick="projectAdd.cancel()">取消</a>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

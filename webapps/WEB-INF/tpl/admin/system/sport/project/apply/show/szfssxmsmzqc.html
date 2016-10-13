@@ -1,0 +1,268 @@
+<!-- 市民运动场（新建足球场） -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>上海市 市民运动场（新建足球场）</title> #style
+</head>
+<body>
+	<style type="text/css">
+.tdClass {
+	text-align: right
+}
+
+table.gridtable {
+	font-family: verdana, arial, sans-serif;
+	font-size: 11px;
+	color: #333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+</style>
+	<script type="application/javascript">
+		
+		
+		
+		var winProjectAdd = new Windows("project_show");
+		var projectAdd = {
+				initForm : function(){
+					winProjectAdd.find('#projectForm').form({   
+	 					url:'$!basePath/admin/sport/project/addProject',   
+					    onSubmit: function(){
+					    	var pass = winProjectAdd.find('#projectForm').form("validate");
+					    	if(pass){
+					    		winProjectAdd.find("#ok").linkbutton("loading");
+					    	}
+					    	return pass; 
+					    },   
+					    success:function(data){
+					   		var result = jQuery.parseJSON(data);   
+					        if(result.success == true){
+					        	top.Notiy.success("添加成功!");
+					        	winProjectAdd.setReturnValue(true);
+					        	winProjectAdd.close();
+					        }else{
+					        	top.Dialog.alert("错误",result.error,"error");
+					        }
+					        winProjectAdd.find("#ok").linkbutton("reset");
+					    }
+					}); 
+		 		},				
+		 		ok : function(){
+		 			winProjectAdd.find('#projectForm').submit();
+		 		},
+		 		cancel : function(){
+		 			winProjectAdd.close();
+		 		}
+				
+		}
+	
+		$(function(){
+			projectAdd.initForm();
+		   $.extend($.fn.validatebox.defaults.rules, {
+		        checkNum: {
+		            validator: function(value, param) {
+		                return /^([0-9]+)$/.test(value);
+		            },
+		            message: '请输入整数'
+		        },
+		        checkFloat: {
+		            validator: function(value, param) {
+		                return /^[+|-]?([0-9]+\.[0-9]+)|[0-9]+$/.test(value);
+		            },
+		            message: '请输入合法数字'
+		        }
+		    });
+  		});
+	
+	
+	
+	
+	
+	
+	</script>
+
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'center',border:false">
+			<form id="projectForm" method="post">
+				<!-- 表单类型 -->
+				<input type="hidden" name="at_id" value="1" />
+
+				<table width="100%" class="gridtable">
+					<tr>
+
+						#if($!show == 'open')
+						<td colspan="3" align="center"><h1>2017年度  市政府实事项目  市民足球场  建设  申报（初审）表</h1></td>
+						<!-- <td><a id="ok" class="easyui-linkbutton" href="$!basePath/admin/sport/project/download/$!applicationflow.id">下载附件</a></td> #else -->
+						<td colspan="4" align="center"><h1>2017年度  市政府实事项目  市民足球场  建设  申报（初审）表</h1></td> #end
+
+					</tr>
+					<tr>
+						<td>区域</td>
+						<td><input class="easyui-validatebox" disabled="disabled" data-options="required:true" name="area_str" value="$!areastr" readonly="readonly"></input></td>
+						<td>填表日期：</td>
+						<td><input class="easyui-datebox" disabled="disabled" data-options="required:true" name="create_time_str" value="$!applicationflow.create_time" readonly="readonly"></input></td>
+					</tr>
+					<tr>
+						<td colspan="4"><h4>建设单位</h4></td>
+					</tr>
+					<tr>
+						<td class="tdClass">市民足球场建设（全称）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="project_name" value="$!applicationflowDetail.project_name" maxlength="20" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">市民足球场建设选址（详细地名或路名）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="address" value="$!applicationflowDetail.address" data-options="required:true,validType:'minLength[2]'" /></td>
+					</tr>
+
+					<tr>
+						<td class="tdClass">所属街镇或乡镇(全称)</td>
+						<td colspan="3"><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="town" value="$!applicationflowDetail.town" data-options="required:true,validType:'minLength[2]'" style="width: 94%;" /></td>
+					</tr>
+					<tr>
+						<td class="tdClass">建设单位（街镇分管）联系人</td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="contact_name" value="$!applicationflowDetail.contact_name" maxlength="20" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">建设（街镇分管）单位联系人（电话号码）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="contact_phone" value="$!applicationflowDetail.contact_phone" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td>
+					</tr>
+					<tr>
+						<td colspan="4"><h4>设施内容</h4></td>
+					</tr>
+
+					<tr>
+						<td class="tdClass">足球场地新增面积（平方米）</td>
+						<td><input class="easyui-validatebox" type="text" name="eqproom_area" value="$!applicationflowDetail.eqproom_area" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td class="tdClass">建设项目名称及数量达标：须建标准尺寸球场</td>
+						<td colspan="2"><input class="easyui-validatebox" type="text" name="aerobicroom_area" value="$!applicationflowDetail.aerobicroom_area" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+					</tr>
+					<tr>
+						<td colspan="1">其它配套设施主要内容</td>
+						<td colspan="3"><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="ancillary_content" value="$!applicationflowDetail.ancillary_content" maxlength="20" data-options="required:true"
+							style="width: 90%;" /></td>
+					</tr>
+
+					<tr>
+						<td colspan="4"><h4>资金落实</h4></td>
+					</tr>
+					<tr>
+						<td class="tdClass">总预算：（包括其它配套设施建设项目）<br />（万元）
+						</td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="overall_budget" value="$!applicationflowDetail.overall_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td class="tdClass">其中：体育设施建设项目预算（万元）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="sport_budget" value="$!applicationflowDetail.sport_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+					</tr>
+					<tr>
+						<td colspan="4"><h3>其中：体育设施建设项目预算资金落实情况（万元）</h3></td>
+					</tr>
+					<tr>
+						<td>区县体育局</td>
+						<td>街道（乡镇）</td>
+						<td>甲方建设单位</td>
+						<td>其它</td>
+					</tr>
+					<tr>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="county_budget" value="$!applicationflowDetail.county_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="street_budget" value="$!applicationflowDetail.street_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="company_budget" value="$!applicationflowDetail.company_budget" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="other_budget" value="$!applicationflowDetail.other_budget" maxlength="20" data-options="required:true,validType:'checkFloat'"
+							style="width: 90%" /></td>
+					</tr>
+
+					<tr>
+						<td colspan="4"><h4>相关情况</h4></td>
+					</tr>
+					<tr>
+						<td class="tdClass">拟开工年月</td>
+						<td><input class="easyui-datebox" disabled="disabled" readonly="readonly" name="start_date_str" value="$!applicationflowDetail.start_date" data-options="required:true" /></td>
+						<td class="tdClass">预计竣工年月</td>
+						<td><input class="easyui-datebox" disabled="disabled" readonly="readonly" name="completed_date_str" value="$!applicationflowDetail.completed_date" data-options="required:true" /></td>
+					</tr>
+					<tr>
+						<td class="tdClass">管理单位（全称）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="management_unit" value="$!applicationflowDetail.management_unit" maxlength="200"
+							data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">年度管理经费（万元）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="operating_charges" value="$!applicationflowDetail.operating_charges" maxlength="5" data-options="required:true,validType:'checkNum'" /></td>
+					</tr>
+					<tr>
+						<td class="tdClass">意向施工单位（全称）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" readonly="readonly" type="text" name="intent_company" value="$!applicationflowDetail.intent_company" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">足球场开放是否公益性收费</td>
+						<td><input class="iptradio" type="radio" disabled="disabled" name="is_welfare" value="否" checked="checked" /> 否 <input class="iptradio" type="radio" name="is_welfare" value="是" /> 是</td>
+						<script>
+							var radio = $('input:radio[name="is_welfare"][value="$!applicationflowDetail.is_welfare"]');
+							radio.attr("checked", "checked");//
+						</script>
+
+					</tr>
+
+					<tr>
+						<td colspan="4"><h4>备注</h4></td>
+					</tr>
+					<tr>
+						<td colspan="4"><textarea disabled="disabled" readonly="readonly" class="easyui-textarea" name="remark" rows="3" style="width: 96%;">$!applicationflow.remark</textarea></td>
+					</tr>
+					<tr>
+						<td colspan="5"><h3>审核意见</h3></td>
+					</tr>
+					<tr>
+						<td>建设（街镇或社区文化活动中心）<br/>单位申报意见</td>
+						<td><input type="radio" name="swsbyj" value="0" checked="checked" />同意<input type="radio" name="swsbyj" value="1" />不同意</td>
+						<td>区县体育局（管理或指导中心）<br/>初审意见：</td>
+						<td><input type="radio" name="csyj" value="0" checked="checked" />同意 <input type="radio" name="csyj" value="1" />不同意</td>
+					</tr>
+					<tr>
+						<td>市体育局群体处审核意见</td>
+						<td colspan="4"><textarea class="easyui-textarea" name="obj1" rows="3" style="width: 94%;" readonly="readonly">$!applicationflowDetail.obj1</textarea></td>
+					</tr>
+
+					<tr>
+						<td colspan="4" style="font-size: 15px">
+							<div>附：</div>
+							<div>
+								<span>建设申报资料：</span> <span>建设施工组织方案书（包括施工图纸）、施工合同复印件和预算书各一式二份。</span>
+							</div>
+							<div>
+								<span>竣工申报资料：</span> <span>	足球场面层材料专业部门质检报告、竣工图纸、监理或竣工验收报告书、工程结算书（工程建设更改签单确认）、
+	              工程造价审价书和足球场建成后全景彩色照片各一式二份。</span>
+							</div>
+							<div>
+								<span>开放管理资料：</span> <span>	提供《建设单位（街镇或社区文化活动中心）开放管理和维护的承诺书（原件）》，主要内容须包括制度、人员、
+	              经费（足球场维修和更新）三落实，并盖公章确认。</span>
+							</div>
+							<div>
+								<span>办理立项手续：</span> <span>	区体育局配合将上述建设申报资料申报齐全，并与市体育局群体处共同现场勘察确认通过后，下达《同意建设
+	              书》。</span>
+							</div>
+						</td>
+					</tr>
+
+				</table>
+			</form>
+		</div>
+		<!-- 
+		<div data-options="region:'south',border:false">
+			<div class="dialog-button">
+				<a id="ok" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="projectAdd.ok()">确定</a> <a id="cancel" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)"
+					onclick="projectAdd.cancel()">取消</a>
+			</div>
+		</div>
+ -->
+	</div>
+</body>
+</html>

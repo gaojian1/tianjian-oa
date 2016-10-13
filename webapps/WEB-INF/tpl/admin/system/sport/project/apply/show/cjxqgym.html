@@ -1,0 +1,239 @@
+<!-- 2016年度 上海市 居村小区健身房 建设 申报表 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>百姓游池项目申请</title> #style
+</head>
+
+
+<body>
+	<style type="text/css">
+.tdClass {
+	text-align: right
+}
+
+table.gridtable {
+	font-family: verdana, arial, sans-serif;
+	font-size: 11px;
+	color: #333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+</style>
+
+	<script type="application/javascript">
+		
+		
+		var winProjectAdd = new Windows("project_add");
+		var projectAdd = {
+				initForm : function(){
+					winProjectAdd.find('#projectForm').form({   
+	 					url:'$!basePath/admin/sport/project/addProject',   
+					    onSubmit: function(){
+					    	var pass = winProjectAdd.find('#projectForm').form("validate");
+					    	if(pass){
+					    		winProjectAdd.find("#ok").linkbutton("loading");
+					    	}
+					    	return pass; 
+					    },   
+					    success:function(data){
+					   		var result = jQuery.parseJSON(data);   
+					        if(result.success == true){
+					        	top.Notiy.success("添加成功!");
+					        	winProjectAdd.setReturnValue(true);
+					        	winProjectAdd.close();
+					        }else{
+					        	top.Dialog.alert("错误",result.error,"error");
+					        }
+					        winProjectAdd.find("#ok").linkbutton("reset");
+					    }
+					}); 
+		 		},				
+		 		ok : function(){
+		 			winProjectAdd.find('#projectForm').submit();
+		 		},
+		 		cancel : function(){
+		 			winProjectAdd.close();
+		 		}
+				
+		}
+	
+	
+		$(function(){
+			projectAdd.initForm();
+		   $.extend($.fn.validatebox.defaults.rules, {
+		        checkNum: {
+		            validator: function(value, param) {
+		                return /^([0-9]+)$/.test(value);
+		            },
+		            message: '请输入整数'
+		        },
+		        checkFloat: {
+		            validator: function(value, param) {
+		                return /^[+|-]?([0-9]+\.[0-9]+)|[0-9]+$/.test(value);
+		            },
+		            message: '请输入合法数字'
+		        }
+		    });
+  		});
+	
+	
+	</script>
+
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'center',border:false">
+			<form id="projectForm" method="post">
+				<!-- 表单类型 -->
+				<input type="hidden" name="at_id" value="2" />
+
+				<table width="100%" class="gridtable">
+					<tr>
+					
+					#if($!show == 'open')
+					   	<td colspan="3" align="center"><h1>2016年度 上海市 居村小区健身房 建设 申报表</h1></td>
+						<td>
+							<a id="ok" class="easyui-linkbutton"  href="$!basePath/admin/sport/project/download/$!applicationflow.id">下载附件</a>
+						</td>
+					#else
+							<td colspan="4" align="center"><h1>2016年度 上海市 居村小区健身房 建设 申报表</h1></td>
+					#end
+					
+					
+					</tr>
+
+					<tr>
+						<td>区域</td>
+						<td><input class="easyui-validatebox" disabled="disabled" data-options="required:true" name="area_str" value="$!areastr" readonly="readonly"></input></td>
+						<td>申请时间</td>
+						<td><input class="easyui-datebox" disabled="disabled" data-options="required:true" name="create_time_str" value="$!applicationflow.create_time" readonly="readonly"  ></input></td>
+					</tr>
+					<tr>
+						<td colspan="4"><h4>建设单位</h4></td>
+					</tr>
+					<tr>
+						<td class="tdClass">居村小区健身房（全称）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="project_name" readonly="readonly"  value="$!applicationflowDetail.project_name" maxlength="20" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">居村小区健身房选址（详细路名和门牌号码）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="address" readonly="readonly"  value="$!applicationflowDetail.address" data-options="required:true,validType:'minLength[2]'" /></td>
+					</tr>
+
+					<tr>
+						<td class="tdClass">所属街道（街道）社区文化活动中心</td>
+						<td colspan="4"><input class="easyui-validatebox" disabled="disabled" type="text" name="town" readonly="readonly"  value="$!applicationflowDetail.town" data-options="required:true,validType:'minLength[2]'" style="width: 94%;" /></td>
+					</tr>
+					<tr>
+						<td class="tdClass">建设（街镇）单位联系人</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="contact_name" readonly="readonly"  value="$!applicationflowDetail.contact_name" maxlength="20" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">建设（街镇）单位联系人<br />（电话号码）
+						</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="contact_phone" readonly="readonly"  value="$!applicationflowDetail.contact_phone" maxlength="20" data-options="required:true,validType:'minLength[2]'" /></td>
+					</tr>
+					<tr>
+						<td colspan="4"><h4>设施内容</h4><br 实际活动总面积（须80平方米以上）/></td>
+					</tr>
+					
+
+					<tr>
+						<td class="tdClass">其中器械房（平方米）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="eqproom_area" readonly="readonly"  value="$!applicationflowDetail.eqproom_area" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td class="tdClass">其中跳操房（平方米）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="aerobicroom_area" readonly="readonly"  value="$!applicationflowDetail.aerobicroom_area" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+					</tr>
+					<tr>
+						<td class="tdClass">其中体侧室（平方米）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="gymroom_area" readonly="readonly"  value="$!applicationflowDetail.gymroom_area" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td class="tdClass">居村小区健身房建设（其它配套设施）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="ancillary_area" readonly="readonly"  value="$!applicationflowDetail.ancillary_area" maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+					</tr>
+
+					<tr>
+						<td class="tdClass">实际健身器械配置（须10大件以上）</td>
+						<td colspan="3"><textarea class="easyui-textarea" disabled="disabled" name="act_fitneseqp"   readonly="readonly"  rows="3" style="width: 94%;" >$!applicationflowDetail.act_fitneseqp</textarea></td>
+					</tr>
+
+					<tr>
+						<td colspan="4"><h4>资金落实</h4></td>
+					</tr>
+					<tr>
+						<td rowspan="2">居村小区健身房健身器械采购总预算<br /> （万元）
+						</td>
+						<td colspan="3">该建设项目预算落实情况（万元）</td>
+					</tr>
+					<tr>
+						<td>区县体育局</td>
+						<td>街道（乡镇）</td>
+						<td>其它单位</td>
+					</tr>
+					<tr>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="overall_budget" value="$!applicationflowDetail.overall_budget" readonly="readonly"  maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="county_budget" value="$!applicationflowDetail.county_budget" readonly="readonly"  maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="street_budget" value="$!applicationflowDetail.street_budget" readonly="readonly"  maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="other_budget" value="$!applicationflowDetail.other_budget" readonly="readonly"  maxlength="20" data-options="required:true,validType:'checkFloat'" /></td>
+					</tr>
+					<tr>
+						<td colspan="4"><h4>相关情况</h4></td>
+					</tr>
+					<tr>
+						<td class="tdClass">进场开工月份</td>
+						<td><input class="easyui-datebox" disabled="disabled" name="start_date_str" value="$!applicationflowDetail.start_date" readonly="readonly"  data-options="required:true" /></td>
+						<td class="tdClass">意向采购健身器械公司</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="intent_company" readonly="readonly"  value="$!applicationflowDetail.intent_company" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td>
+
+					</tr>
+					<tr>
+						<td class="tdClass">开放管理单位（全称）</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="management_unit" readonly="readonly"  value="$!applicationflowDetail.management_unit" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td>
+						<td class="tdClass">开放管理工作人员数</td>
+						<td><input class="easyui-validatebox" disabled="disabled" type="text" name="management_staff_qty" readonly="readonly"   value="$!applicationflowDetail.management_staff_qty" maxlength="5" data-options="required:true,validType:'checkNum'"  /></td>
+					</tr>
+					<tr>
+						<td colspan="4"><h4>备注</h4></td>
+					</tr>
+					<tr>
+						<td colspan="4"><textarea disabled="disabled" class="easyui-textarea" name="remark" rows="3" style="width: 94%;" readonly="readonly"  >$!applicationflow.remark</textarea></td>
+					</tr>
+					<!--  
+					<tr>
+						<td colspan="5"><h3>审核意见</h3></td>
+					</tr>
+					<tr>
+						<td>建设（街镇或社区文化活动中心）<br/>单位申报意见</td>
+						<td><input type="radio" name="swsbyj" value="0" checked="checked" />同意<input type="radio" name="swsbyj" value="1" />不同意</td>
+						<td>区县体育局（管理或指导中心）<br/>初审意见：</td>
+						<td><input type="radio" name="csyj" value="0" checked="checked" />同意 <input type="radio" name="csyj" value="1" />不同意</td>
+					</tr>
+					-->
+				</table>
+			</form>
+		</div>
+		<!-- 
+		<div data-options="region:'south',border:false">
+			<div class="dialog-button">
+				<a id="ok" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="projectAdd.ok()">确定</a> <a id="cancel" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)"
+					onclick="projectAdd.cancel()">取消</a>
+			</div>
+		</div>
+ -->
+	</div>
+
+
+</body>
+</html>

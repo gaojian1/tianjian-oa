@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>编辑用户</title>
+</head>
+  <body>
+  <script type="text/javascript">
+  		var winShowChangeInfo = new Windows("win_showChangeInfo");
+  		
+  		var oUserEdit = {
+  			initForm : function(){
+  				winShowChangeInfo.find('#userForm').form({   
+				    url:'$!basePath/admin/user/doEditNew',   
+				    onSubmit: function(){
+				    	var pass = winShowChangeInfo.find("#userForm").form("validate");
+				    	if(pass){
+				    		$("#ok").linkbutton("loading");
+				    	}
+				    	return pass; 
+				    },   
+				    success:function(data){
+				   		var result = jQuery.parseJSON(data);   
+				        if(result.success == true){
+				        	top.Notiy.success("修改成功!");
+				        	winShowChangeInfo.setReturnValue(true);
+				        	winShowChangeInfo.close();
+				        }else if(result.NoChanges){
+				        	top.Notiy.success("您未做任何修改!");
+				        	winShowChangeInfo.setReturnValue(false);
+				        	winShowChangeInfo.close();
+				        }else{
+				        	top.Dialog.alert("错误",result.error,"error");
+				        }
+				        $("#ok").linkbutton("reset");
+				    }
+				}); 
+	 		},
+	 		ok : function(){
+	 			winShowChangeInfo.find('#userForm').submit();
+	 		},
+	 		cancel : function(){
+	 			winShowChangeInfo.close();
+	 		}
+  		};
+  		$(function(){
+  			oUserEdit.initForm();
+  		});
+	</script>
+    <div class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'center',border:false">
+				<form id="userForm" method="post" style="padding-top:10px;padding-left:20px;">
+				<input type="hidden" name="id" value="$!user.id"/>
+				<input type="hidden" name="loginName" value="$!user.loginName"/>
+				<table width="90%">
+					<tr>
+						<td>用户名：</td>
+						<td>
+						<input class="easyui-validatebox" type="text" maxlength="20" data-options="required:true,validType:'minLength[3]'" value="$!user.loginName" disabled="disabled" style="width:90%"/>  
+						</td>
+						<td>
+							姓名：
+						</td>
+						<td>
+							<input class="easyui-validatebox" type="text" name="realName" maxlength="20" data-options="required:true,validType:'minLength[2]'" value="$!user.realName" style="width:90%"/>  
+						</td>
+					</tr>
+					<tr>
+						<td>固定电话：</td>
+						<td>
+						<input class="easyui-validatebox" name="telphone" maxlength="20" data-options="validType:'telphone'" value="$!user.telphone" style="width:90%"/>  
+						</td>
+						<td>
+							手机：
+						</td>
+						<td>
+							<input class="easyui-validatebox" name="mobile" maxlength="20" data-options="validType:'mobile'" value="$!user.mobile" style="width:90%"/>  
+						</td>
+					</tr>
+					<tr>
+						<td>Email：</td>
+						<td>
+						<input class="easyui-validatebox" name="eMail" maxlength="50" data-options="validType:'email'" value="$!user.eMail" style="width:90%"/>  
+						</td>
+						<td>
+							QQ：
+						</td>
+						<td>
+							<input class="easyui-validatebox" name="qQ" maxlength="12" value="$!user.qQ" style="width:90%"/>  
+						</td>
+					</tr>
+				</table>
+				</form>
+			</div>
+			<div data-options="region:'south',border:false">
+				<div class="dialog-button">
+					<a id="ok" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="oUserEdit.ok()">确定</a>
+					<a id="cancel" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="oUserEdit.cancel()">取消</a>
+				</div>
+			</div>
+		</div>
+  </body>
+</html>

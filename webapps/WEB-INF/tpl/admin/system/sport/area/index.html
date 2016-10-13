@@ -1,0 +1,378 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>用户管理</title> #style <!-- 监听键盘事件 -->
+	<script type="text/javascript" src="$!basePath/framework/js/core/plugin/zframe.keyboard.js"></script>
+</head>
+<body id="userLayout" class="easyui-layout">
+	<script type="text/javascript">
+		var areaId = null;
+		$(function() {
+			initDataGrid();//初始化表格
+			initToolbar();
+		});
+		//初始化表格
+		function initDataGrid() {
+			$('#dgUserList')
+					.datagrid(
+							{
+								autoRowHeight : false,
+								collapsible : true,
+								url : '$!basePath/admin/sport/area/findUserByArea',
+								sortName : 'id',
+								sortOrder : 'asc',
+								remoteSort : true,
+								border : false,
+								fit : true,
+								idField : 'id',
+								singleSelect : false,
+								frozenColumns : [ [ {
+									field : 'ck',
+									checkbox : true
+								}, {
+									title : '序号',
+									field : 'id',
+									width : 40,
+									sortable : true
+								} ] ],
+								columns : [ [
+
+										{
+											field : 'realName',
+											title : '姓名',
+											width : 80,
+											formatter : function(value, row,
+													index) {
+												return highShowSearch(
+														$("#dgUserList"),
+														"realName", value);
+											}
+										},
+										{
+											field : 'loginName',
+											title : '用户名',
+											width : 120,
+											sortable : true,
+											sorter : function(a, b) {
+												return (a > b ? 1 : -1);
+											},
+											formatter : function(value, row,
+													index) {
+												return DataGridUtil
+														.HighShowSearch(
+																$("#dgUserList"),
+																"loginName",
+																value);
+											}
+										},
+										{
+											field : 'mobile',
+											title : '手机号码',
+											width : 120
+										},
+										{
+											field : 'email',
+											title : '电子邮箱',
+											width : 130,
+											formatter : function(value, row,
+													index) {
+												if (value && value.length > 0) {
+													value = "<a href='mailto:"+value+"'>"
+															+ value + "</a>";
+												}
+												return value;
+											}
+										},
+										{
+											field : 'address',
+											title : '地址',
+											width : 180
+										},
+										{
+											field : 'enabled',
+											title : '状态',
+											width : 50,
+											formatter : function(value, row,
+													index) {
+												if (value == "0")
+													return "正常";
+												else if (value == "1")
+													return "<span style='color:red;'>锁定<span>";
+											}
+										}, {
+											field : 'lastLoginTime',
+											title : '最后登录时间',
+											width : 130
+										} ] ],
+								pagination : true,
+								rownumbers : true,
+								toolbar : '#dgUserList-toolbar',
+								onHeaderContextMenu : function(e, field) {
+									e.preventDefault();
+
+								},
+								onRowContextMenu : function(e, rowindex,
+										rowData) {
+									rowContentMenuShowHandler(e, rowindex,
+											rowData, "dgUserList",
+											"dgUserList_rowContextMenu");
+								},
+								onDblClickRow : function(rowindex, rowdata) {
+								},
+								onLoadSuccess : function() {
+								}
+							});
+
+			$('#ktjUserList')
+					.datagrid(
+							{
+								autoRowHeight : false,
+								collapsible : true,
+								url : '$!basePath/admin/sport/area/findUserByAreaAll',
+								sortName : 'id',
+								sortOrder : 'asc',
+								remoteSort : true,
+								border : false,
+								fit : true,
+								idField : 'id',
+								singleSelect : false,
+								frozenColumns : [ [ {
+									field : 'ck',
+									checkbox : true
+								}, {
+									title : '序号',
+									field : 'id',
+									width : 40,
+									sortable : true
+								} ] ],
+								columns : [ [
+
+										{
+											field : 'realName',
+											title : '姓名',
+											width : 80,
+											formatter : function(value, row,
+													index) {
+												return highShowSearch(
+														$("#ktjUserList"),
+														"realName", value);
+											}
+										},
+										{
+											field : 'loginName',
+											title : '用户名',
+											width : 120,
+											sortable : true,
+											sorter : function(a, b) {
+												return (a > b ? 1 : -1);
+											},
+											formatter : function(value, row,
+													index) {
+												return DataGridUtil
+														.HighShowSearch(
+																$("#ktjUserList"),
+																"loginName",
+																value);
+											}
+										},
+										{
+											field : 'mobile',
+											title : '手机号码',
+											width : 120
+										},
+										{
+											field : 'email',
+											title : '电子邮箱',
+											width : 130,
+											formatter : function(value, row,
+													index) {
+												if (value && value.length > 0) {
+													value = "<a href='mailto:"+value+"'>"
+															+ value + "</a>";
+												}
+												return value;
+											}
+										},
+										{
+											field : 'address',
+											title : '地址',
+											width : 180
+										},
+										{
+											field : 'enabled',
+											title : '状态',
+											width : 50,
+											formatter : function(value, row,
+													index) {
+												if (value == "0")
+													return "正常";
+												else if (value == "1")
+													return "<span style='color:red;'>锁定<span>";
+											}
+										}, {
+											field : 'lastLoginTime',
+											title : '最后登录时间',
+											width : 130
+										} ] ],
+								pagination : true,
+								rownumbers : true,
+								toolbar : '#ktjUserList-toolbar',
+								onHeaderContextMenu : function(e, field) {
+									e.preventDefault();
+
+								},
+								onRowContextMenu : function(e, rowindex,
+										rowData) {
+
+								},
+								onDblClickRow : function(rowindex, rowdata) {
+								},
+								onLoadSuccess : function() {
+								}
+							});
+
+			var pager1 = $("#dgUserList").datagrid("getPager");
+			pager1.pagination({
+				showPageList : false,
+				showRefresh : false,
+				displayMsg : "{from}至{to},共{total}"
+			});
+			var pager2 = $("#ktjUserList").datagrid("getPager");
+			pager2.pagination({
+				showPageList : false,
+				showRefresh : false,
+				displayMsg : "{from}至{to},共{total}"
+			});
+
+		}
+
+		function rowContentMenuClickHandler(item) {
+			ContentMenuClickHandler("dgUserList", item);
+		}
+		function doSearch(v, n) {
+			doDataGridSearch("dgUserList", n, v);
+		}
+		function unitTree_OnSelect(node) {
+			areaId = node.id;
+			$("#dgUserList").datagrid({
+				url : '$!basePath/admin/sport/area/findUserByArea',
+				queryParams : {
+					areaId : node.id
+				}
+			});
+		}
+
+
+		function initToolbar(){
+			$("#btnDeleteUserArea").click(function(){
+				var dg1 = $("#ktjUserList");
+				var dg2 = $("#dgUserList");
+				var selectRows = dg2.datagrid("getSelections");
+				if(selectRows.length>0){
+					var areaIds = new Array();
+					$.each(selectRows,function(i,row){
+						areaIds.push(row.id);
+					});
+					$.post("$!basePath/admin/sport/area/deleteAreaByIds",{areaIds:areaIds.toString()},function(data){
+						if(data.NoChanges == true){
+							top.Notiy.info("您未做任何修改!");
+						}else if(data.success == true){
+							top.Notiy.success("移除用户成功!");
+							dg1.datagrid("reload");
+							dg2.datagrid("reload");
+						}else{
+							top.Dialog.error(data.error);
+						}
+					},"json");
+				}else{
+					top.Notiy.warning("请先选择要移除的用户!");
+				}
+			});
+			
+			
+			$("#btnAddUserArea").click(function(){
+				var dg1 = $("#dgUserList");
+				var dg2 = $("#ktjUserList");
+				var selectRows = dg2.datagrid("getSelections");
+				if(selectRows.length>0){
+					var userIds = new Array();
+					$.each(selectRows,function(i,row){
+						userIds.push(row.id);
+					});
+					$.post("$!basePath/admin/sport/area/addUserAreaByUser",{userIds:userIds.toString(),areaId:areaId},function(data){
+						if(data.NoChanges == true){
+							top.Notiy.info("您未做任何修改!");
+						}else if(data.success == true){
+							top.Notiy.success("添加用户成功!");
+							dg1.datagrid("reload");
+							dg2.datagrid("reload");
+						}else{
+							top.Dialog.error(data.error);
+						}
+					},"json");
+				}else{
+					top.Notiy.warning("请先选择要添加用户!");
+				}
+			});			
+			
+			
+			
+		}		
+		
+		
+		
+	</script>
+	<div data-options="region:'west',split:false,border:false" style="width: 200px; padding-right: 1px;">
+		<div class="easyui-panel" data-options="title:'区域列表',fit:true" style="padding-left: 5px;">
+			<ul id="unitTree" class="easyui-tree" data-options="url:'$!basePath/admin/sport/area/toAreaTree',animate:true,onSelect:unitTree_OnSelect"></ul>
+		</div>
+	</div>
+	<div data-options="region:'center',title:'用户列表',iconCls:'icon-user-edit',border:true,headerCls:'headStyle'" style="background: #fff; margin-bottom: 1px;">
+		<div id="tt" class="easyui-tabs" data-options="fit:true,border:false">
+			<div title="已拥有">
+				<table id="dgUserList"></table>
+			</div>
+			<div title="可添加">
+				<table id="ktjUserList"></table>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- 工具条 -->
+	<div id="ktjUserList-toolbar" style="padding: 2px 0;" class="datagrid-toolbar">
+		<table cellpadding="0" cellspacing="0" style="width: 100%">
+			<tr>
+				<td style="padding-left: 2px"><a id="btnAddUserArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" style="float: left;">添加选中</a></td>
+				<td style="text-align: right; padding-right: 2px"><input id="ss" style="width: 240px;" class="easyui-searchbox" data-options="searcher:doSearch,prompt:'请输入查询内容',menu:'#ss_mm'"></input>
+					<div id="ss_mm" style="width: 80px;">
+						<div data-options="name:'id'">序号</div>
+						<div data-options="name:'loginName'">员工号</div>
+						<div data-options="name:'realName'">姓名</div>
+					</div></td>
+			</tr>
+		</table>
+	</div>
+
+
+
+
+
+	<!-- 工具条 -->
+	<div id="dgUserList-toolbar" style="padding: 2px 0;" class="datagrid-toolbar">
+		<table cellpadding="0" cellspacing="0" style="width: 100%">
+			<tr>
+				<td style="padding-left: 2px"><a id="btnDeleteUserArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" style="float: left;">移除选中</a></td>
+				<td style="text-align: right; padding-right: 2px"><input id="ss" style="width: 240px;" class="easyui-searchbox" data-options="searcher:doSearch,prompt:'请输入查询内容',menu:'#ss_mm'"></input>
+					<div id="ss_mm" style="width: 80px;">
+						<div data-options="name:'id'">序号</div>
+						<div data-options="name:'loginName'">员工号</div>
+						<div data-options="name:'realName'">姓名</div>
+					</div></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!-- 2016年度 百姓健身房健身器械添置表 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>健身房健身器械添置表</title> #style
+	
+	<script src="webapps/resources/framework/js/core/zframe.ui.min.js"></script>
+</head>
+
+
+<body>
+
+	<style type="text/css">
+table.gridtable {
+	font-family: verdana, arial, sans-serif;
+	font-size: 11px;
+	color: #333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+</style>
+	<script type="application/javascript">
+		
+		var winProjectAdd = new Windows("project_add");
+		var projectAdd = {
+				initForm : function(){
+					winProjectAdd.find('#projectForm').form({   
+	 					url:'$!basePath/admin/sport/project/addProjectQX',   
+					    onSubmit: function(){
+					    	winProjectAdd.find("#checkOk").linkbutton("loading");
+					    	return true; 
+					    },   
+					    success:function(data){
+					   		var result = jQuery.parseJSON(data);   
+					        if(result.success == true){
+					        	top.Notiy.success("申请成功!");
+					        	winProjectAdd.setReturnValue(true);
+					        	winProjectAdd.close();
+					        }else{
+					        	top.Dialog.alert("错误",result.error,"error");
+					        }
+					        winProjectAdd.find("#ok").linkbutton("reset");
+					    }
+					}); 
+		 		},	
+		 		checkOk:function(){
+		 			winProjectAdd.find('#projectForm').submit();
+		 		},
+		 		ok : function(){
+		 			
+		 		 	var pass = winProjectAdd.find('#projectForm').form("validate");
+			    	if(pass){
+		    			var reg = /^\d+(\.\d+)?$/;
+		    			var patt1 = new RegExp(reg);
+		    			var tempDate="";
+		    			var flag = true;
+			    		$("#tableData tbody tr").each(function(){
+			    			var tdArr = $(this).children();
+			    			var temp = tdArr.find('input');
+			    			var data5 = temp.get(5).value;
+			    			var data6 = temp.get(6).value;
+			    			if(data5 != ''){
+				    			if(!patt1.test(data5)){
+				    				flag= false;
+				    				Dialog.alert("错误","单价格式错误(只能是数字)","error");
+				    				return false;
+				    			}
+			    			}
+							if(data6!=''){
+								if(!patt1.test(data6)){
+				    				flag= false;
+				    				Dialog.alert("错误","配件数格式错误(只能是数字)","error");
+				    				return false;
+				    			}
+							}
+							if(data5!='' && data6!=''){
+								temp.get(7).innerHTML=data5*data6;
+								temp.get(7).value=data5*data6;
+							}
+			    	
+			    			temp.each(function(index,element){
+			    				
+			    				tempDate = tempDate+element.value;
+			    			});
+		
+			    			
+			    		});
+			    		if(flag){
+				    		if(tempDate == ""){
+				    			Dialog.alert("错误","数据不能为空","error");
+				    			return false;
+				    		}else{
+				    			//winProjectAdd.find("#ok").linkbutton("loading");
+				    			winProjectAdd.find("#checkOk").css('visibility','visible'); 
+				    			
+				    		}
+			    		}else{
+			    			return false;
+			    		}
+			    		
+			    		
+			    	}		 			
+		 			
+		 			
+		 		},
+		 		cancel : function(){
+		 			winProjectAdd.close();
+		 		}
+		}
+		
+		var i = 1;
+		
+		function addCloumn (){
+ 			var data ='<tr>';
+			   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].Vendor" maxlength="200"/></td>';
+			   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].brand" maxlength="200"/></td>';
+			   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].importsordomestic" maxlength="200"/></td>';
+			   //data += '	<td><select class="easyui-combobox" name="details['+i+'].importsordomestic" data-options="required:true,width:80"><option value="国产">国产</option><option value="进口">进口</option></select></td>';
+			   data += '	<td colspan="2"><input class="easyui-validatebox" type="text" name="details['+i+'].facility_name" maxlength="200"/></td>';
+			   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].facility_model" maxlength="200"/></td>';
+			   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].facility_price" maxlength="200"/></td>';
+			   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].facility_qty" maxlength="200"/></td>';
+			   data += '	<td><input class="easyui-validatebox" type="text"  maxlength="200"/></td>';
+			   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].obj6" maxlength="200"/></td>';
+			   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].obj1" maxlength="200"/></td>';
+			   data +='</tr>';
+			   // data += '<tr>	<td><input class="easyui-validatebox" type="text" name="intent_constructionunit" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td>';
+			   $("#tableData>tbody").append(data);
+			   i = i + 1;
+ 		}
+		
+		$(function(){
+			projectAdd.initForm();
+			   for(i=0;i<=0;i++){
+				   var data ='<tr>';
+				   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].Vendor" maxlength="200"/></td>';
+				   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].brand" maxlength="200"/></td>';
+				   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].importsordomestic" maxlength="200"/></td>';
+				   //data += '	<td><select class="easyui-combobox" name="details['+i+'].importsordomestic" data-options="required:true,width:80"><option value="国产">国产</option><option value="进口">进口</option></select></td>';
+				   data += '	<td colspan="2"><input class="easyui-validatebox" type="text" name="details['+i+'].facility_name" maxlength="200"/></td>';
+				   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].facility_model" maxlength="200"/></td>';
+				   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].facility_price" maxlength="200"/></td>';
+				   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].facility_qty" maxlength="200"/></td>';
+				   data += '	<td><input class="easyui-validatebox" type="text"  maxlength="200"/></td>';
+				   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].obj6" maxlength="200"/></td>';
+				   data += '	<td><input class="easyui-validatebox" type="text" name="details['+i+'].obj1" maxlength="200"/></td>';
+				   data +='</tr>';
+				   // data += '<tr>	<td><input class="easyui-validatebox" type="text" name="intent_constructionunit" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td>';
+				   $("#tableData>tbody").append(data);
+			   }
+			
+  		});
+	
+	</script>
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'center',border:false">
+			<form id="projectForm" method="post">
+
+				<!-- 表单类型 -->
+				<!-- <input type="hidden" name="at_id" value="5" /> <input type="hidden" name="project_name" value="百姓健身房健身器械添置" /> --> -->
+				<table width="100%" class="border-table">
+					<tr>
+						<td colspan="4" align="center"><h1>
+							<input class="easyui-validatebox" type="text" name="community_name" maxlength="200" data-options="required:true,validType:'minLength[2]'" />健身房 健身器械 添置表</h1>
+						</td>
+					</tr>
+					
+					<tr>
+						<!-- <td>社区</td>
+						<td><input class="easyui-validatebox" type="text" name="community_name" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td> -->
+
+						<td>申请单位：</td>
+						<td><input class="easyui-validatebox" type="text" name="Application_unit" maxlength="200" data-options="required:true,validType:'minLength[2]'" /></td>
+						
+						 
+						<!-- <td>区域</td>
+						<td><input class="easyui-validatebox" disabled="true" data-options="required:true" name="area_str" value="$!areastr"></input></td>
+						 -->
+						<td>制表日期：</td>
+						<td colspan="3"><input class="easyui-datebox" data-options="required:true" name="create_time_str" value="$!nowdate"></input></td>
+					</tr>
+
+
+				</table>
+
+				<!-- 表单类型 -->
+				<input type="hidden" name="at_id" value="5" />
+				<table class="gridtable" width="100%" cellspacing="0" cellpadding="0" id="tableData">
+					<thead>
+						<tr align="center" bgcolor="#3E3695" style="color: #000000; height: 25px;">
+							<th rowspan="2">供应厂商</th>
+							<th rowspan="2">品牌名称中文名称</th>
+							<th rowspan="2">进口/国产</th>
+							<th colspan="3">需配置的健身器械</th>
+							<th colspan="3">健身器械配置申请金额（元）</th>
+							<th rowspan="2">健身器材拟进场月份</th>
+							<th rowspan="2">备注</th>
+						</tr>
+						<tr align="center" bgcolor="#3E3695" style="color: #000000; height: 30px;">
+							<th colspan="2" width="20%">全 称</th>
+							<th width="20%">具体型号</th>
+							<th>单 价</th>
+							<th>配置件数</th>
+							<th>小 计</th>
+						</tr>
+					</thead>
+
+					<tbody>
+					</tbody>
+				</table>
+				
+				<span>
+				注：1、该表请自行复核，附在《上海市“健身房”建设申报表》后，上报市体育局群体处朱海明。
+					</br>&nbsp;&nbsp;2、健身房建设其器材配置具体联系人姓名：  <input type="text" name="obj8" maxlength="200" data-options="required:true,validType:'minLength[2]'" />            办公电话：           <input type="text" name="obj9" maxlength="200" data-options="required:true,validType:'minLength[2]'" />      手机号码：<input type="text" name="obj10" maxlength="200" data-options="required:true,validType:'minLength[2]'" /> 
+					</span>
+			</form>
+			<a id="addCloumn" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="addCloumn()">添加一行</a>
+		</div>
+
+		<div data-options="region:'south',border:false">
+			<div></div>
+		
+			<div class="dialog-button">
+				<!-- <a id="add" class="easyui-linkbutton" data-options="iconCls:'icon-add'" href="javascript:void(0)" onclick="projectAdd.ok()">添加器械</a> --> 
+				<a id="checkOk" class="easyui-linkbutton" style="visibility:hidden" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="projectAdd.checkOk()">确定提交</a>
+				<a id="ok" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="projectAdd.ok()">确定</a>
+				<a id="cancel" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="projectAdd.cancel()">取消</a>
+			</div>
+		</div>
+
+	</div>
+
+
+</body>
+</html>

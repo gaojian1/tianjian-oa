@@ -1,0 +1,394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>申请单列表</title> #style <!-- 监听键盘事件 -->
+	<script type="text/javascript" src="$!basePath/framework/js/core/plugin/zframe.keyboard.js"></script>
+</head>
+<body id="userLayout" class="easyui-layout">
+	<script type="text/javascript">
+		var areaId = null;
+		var winAudit = new Windows("audit");
+		var winDbEntity = new Windows("win_db_entity");
+		
+		$(function() {
+			initDataGrid();//初始化表格
+			initWindows();//初始化要打开的窗口
+			initToolbar();
+		});
+		
+		function initWindows(){
+			winAudit.windows({
+				title:"审批",
+				width:430,
+				height:275,
+				modal:true,
+				closed:true,
+				iconCls:'icon-user-edit',
+				href:"$!basePath/admin/system/sport/project/manage/audit",
+				onClose:function(){
+					if(winAudit.getReturnValue()=="true"){
+						$('#dgUserList').datagrid("reload");
+						$('#ktjUserList').datagrid("reload");
+					}
+				}
+			});
+			
+			winDbEntity.windows({
+			width:800,
+			height:550,
+			modal:true,
+			closed:true,
+			iconCls:'icon-application-go'
+		});
+		}
+		
+		function bdxq(id){
+			winDbEntity.windows({title:" 表单详情 ",href:"$!basePath/admin/sport/project/toShow/"+id});
+			winDbEntity.open();
+		}
+		
+		function spls(id){
+			winDbEntity.windows({title:" 审批历史 ",href:"$!basePath/admin/sport/project/showFlow/"+id});
+			winDbEntity.open();
+		}
+		
+		//初始化表格
+		function initDataGrid() {
+			$('#dgUserList')
+					.datagrid(
+							{
+								autoRowHeight : false,
+								collapsible : true,
+								url : '$!basePath/admin/sport/project/manage/findFlowByType',
+								sortName : 'id',
+								sortOrder : 'asc',
+								remoteSort : true,
+								border : false,
+								fit : true,
+								idField : 'id',
+								singleSelect : false,
+								frozenColumns : [ [ {
+									field : 'ck',
+									checkbox : true
+								}, {
+									title : '编号',
+									field : 'form_num',
+									width : 100,
+									sortable : true
+								} ] ],
+								columns : [ [
+
+										{
+											field : 'atname',
+											title : '表单类型',
+											width : 80
+										},
+										{
+											field : 'create_username',
+											title : '申请人',
+											width : 80
+										},
+										{
+											field : 'create_time',
+											title : '申请时间',
+											width : 120,
+											formatter : function(value, row,
+													index) {
+												if (value == null || value == '') {
+													return '';
+												}
+											    return value.substring(0,value.length-2);
+											}
+										},
+										{
+											field : 'currentnode',
+											title : '当前流程节点',
+											width : 130
+										},
+										{
+											field : 'nextnode',
+											title : '下一流程节点',
+											width : 180
+										},
+										{
+											field : 'auditname',
+											title : '最后审批人',
+											width : 50
+										}, {
+											field : 'audittime',
+											title : '最后审批时间',
+											width : 130,
+											formatter : function(value, row,
+													index) {
+												if (value == null || value == '') {
+													return '';
+												}
+											    return value.substring(0,value.length-2);
+											}
+										},
+										{field:'op',title:'操作',width:150,formatter:function(value,row,index){
+							var v = "<a href=\"javascript:;\" onClick=\"bdxq('"+row.id+"')\">表单详情</a>";
+							v += "&nbsp;&nbsp;<a href=\"javascript:;\" onClick=\"spls('"+row.id+"')\">审批历史</a>";
+							return v;
+									}}
+					]],
+								pagination : true,
+								rownumbers : true,
+								toolbar : '#dgUserList-toolbar',
+								onHeaderContextMenu : function(e, field) {
+									e.preventDefault();
+
+								},
+								onRowContextMenu : function(e, rowindex,
+										rowData) {
+									rowContentMenuShowHandler(e, rowindex,
+											rowData, "dgUserList",
+											"dgUserList_rowContextMenu");
+								},
+								onDblClickRow : function(rowindex, rowdata) {
+								},
+								onLoadSuccess : function() {
+								}
+							});
+
+			$('#ktjUserList')
+					.datagrid(
+							{
+								autoRowHeight : false,
+								collapsible : true,
+								url : '$!basePath/admin/sport/project/manage/findFlowByTypeOver',
+								sortName : 'id',
+								sortOrder : 'asc',
+								remoteSort : true,
+								border : false,
+								fit : true,
+								idField : 'id',
+								singleSelect : false,
+								frozenColumns : [ [ {
+									field : 'ck',
+									checkbox : true
+								}, {
+									title : '编号',
+									field : 'form_num',
+									width : 100,
+									sortable : true
+								} ] ],
+								columns : [ [
+
+										{
+											field : 'atname',
+											title : '表单类型',
+											width : 80
+										},
+										{
+											field : 'create_username',
+											title : '申请人',
+											width : 80
+										},
+										{
+											field : 'create_time',
+											title : '申请时间',
+											width : 120,
+											formatter : function(value, row,
+													index) {
+												if (value == null || value == '') {
+													return '';
+												}
+											    return value.substring(0,value.length-2);
+											}
+										},
+										{
+											field : 'status',
+											title : '状态',
+											width : 80
+										},
+										{
+											field : 'auditname',
+											title : '最后审批人',
+											width : 50
+										}, {
+											field : 'audittime',
+											title : '最后审批时间',
+											width : 130,
+											formatter : function(value, row,
+													index) {
+												if (value == null || value == '') {
+													return '';
+												}
+											    return value.substring(0,value.length-2);
+											}
+										} ,
+										{field:'op',title:'操作',width:150,formatter:function(value,row,index){
+							var v = "<a href=\"javascript:;\" onClick=\"bdxq('"+row.id+"')\">表单详情</a>";
+							v += "&nbsp;&nbsp;<a href=\"javascript:;\" onClick=\"spls('"+row.id+"')\">审批历史</a>";
+							return v;
+									}}
+					]],
+								pagination : true,
+								rownumbers : true,
+								toolbar : '#ktjUserList-toolbar',
+								onHeaderContextMenu : function(e, field) {
+									e.preventDefault();
+
+								},
+								onRowContextMenu : function(e, rowindex,
+										rowData) {
+
+								},
+								onDblClickRow : function(rowindex, rowdata) {
+								},
+								onLoadSuccess : function() {
+								}
+							});
+
+			var pager1 = $("#dgUserList").datagrid("getPager");
+			pager1.pagination({
+				showPageList : false,
+				showRefresh : false,
+				displayMsg : "{from}至{to},共{total}"
+			});
+			var pager2 = $("#ktjUserList").datagrid("getPager");
+			pager2.pagination({
+				showPageList : false,
+				showRefresh : false,
+				displayMsg : "{from}至{to},共{total}"
+			});
+
+		}
+		
+		function rowContentMenuClickHandler(item) {
+			ContentMenuClickHandler("dgUserList", item);
+		}
+		function doSearch(v, n) {
+			doDataGridSearch("dgUserList", n, v);
+		}
+		function unitTree_OnSelect(node) {
+			areaId = node.id;
+			$("#dgUserList").datagrid({
+				url : '$!basePath/admin/sport/project/manage/findFlowByType',
+				queryParams : {
+					areaId : node.id
+				}
+			});
+			$("#ktjUserList").datagrid({
+				url : '$!basePath/admin/sport/project/manage/findFlowByTypeOver',
+				queryParams : {
+					areaId : node.id
+				}
+			});
+		}
+
+
+		function initToolbar(){
+			$("#btnAgree").click(function(){
+				var ids = new Array();
+				var selectRows = $("#dgUserList").datagrid("getSelections");
+				$.each(selectRows,function(i,n){
+					ids.push(n.id);
+				});
+				if(ids.length==0){
+					 top.Notiy.warning("请选择审批项！");
+				}else{
+					winAudit.windows({href:"$!basePath/admin/sport/project/manage/audit?ids="+ids+"&action=agree"});
+					winAudit.windows("open");
+				}
+			});
+			
+			$("#btnRefuse").click(function(){
+				var ids = new Array();
+				var selectRows = $("#dgUserList").datagrid("getSelections");
+				$.each(selectRows,function(i,n){
+					ids.push(n.id);
+				});
+				if(ids.length==0){
+					 top.Notiy.warning("请选择审批项！");
+				}else{
+					winAudit.windows({href:"$!basePath/admin/sport/project/manage/audit?ids="+ids+"&action=refuse"});
+					winAudit.windows("open");
+				}
+			});
+			
+			$("#btnDisagree").click(function(){
+				var ids = new Array();
+				var selectRows = $("#dgUserList").datagrid("getSelections");
+				$.each(selectRows,function(i,n){
+					ids.push(n.id);
+				});
+				if(ids.length==0){
+					 top.Notiy.warning("请选择审批项！");
+				}else{
+					winAudit.windows({href:"$!basePath/admin/sport/project/manage/audit?ids="+ids+"&action=disagree"});
+					winAudit.windows("open");
+				}
+			});
+			
+		}		
+		
+		
+		
+	</script>
+	<div data-options="region:'west',split:false,border:false" style="width: 200px; padding-right: 1px;">
+		<div class="easyui-panel" data-options="title:'表单类型',fit:true" style="padding-left: 5px;">
+			<ul id="unitTree" class="easyui-tree" data-options="url:'$!basePath/admin/sport/project/manage/getAppType',animate:true,onSelect:unitTree_OnSelect"></ul>
+		</div>
+	</div>
+	<div data-options="region:'center',title:'申请单列表',iconCls:'icon-user-edit',border:true,headerCls:'headStyle'" style="background: #fff; margin-bottom: 1px;">
+		<div id="tt" class="easyui-tabs" data-options="fit:true,border:false">
+			<div title="审批中">
+				<table id="dgUserList"></table>
+			</div>
+			<div title="已归档">
+				<table id="ktjUserList"></table>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- 工具条 -->
+	<div id="ktjUserList-toolbar" style="padding: 2px 0;" class="datagrid-toolbar">
+		<table cellpadding="0" cellspacing="0" style="width: 100%">
+			<tr>
+				<td style="text-align: right; padding-right: 2px"><input id="ss" style="width: 240px;" class="easyui-searchbox" data-options="searcher:doSearch,prompt:'请输入查询内容',menu:'#ss_mm'"></input>
+					<div id="ss_mm" style="width: 80px;">
+						<div data-options="name:'form_num'">编号</div>
+						<div data-options="name:'at_name'">表单类型</div>
+						<div data-options="name:'create_username'">申请人</div>
+						<div data-options="name:'create_time'">申请日期</div>
+						<div data-options="name:'realName'">最后审批人</div>
+						<div data-options="name:'realName'">最后审批时间</div>
+					</div></td>
+			</tr>
+		</table>
+	</div>
+
+
+
+
+
+	<!-- 工具条 -->
+	<div id="dgUserList-toolbar" style="padding: 2px 0;" class="datagrid-toolbar">
+		<table cellpadding="0" cellspacing="0" style="width: 100%">
+			<tr>
+				<td style="padding-left:2px">
+					<a id="btnAgree"	href="javascript:void(0)" class="easyui-linkbutton"	data-options="iconCls:'icon-unit-add',plain:true"	style="float: left;"><b>同意</b></a>
+					<a id="btnRefuse" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-unit-edit',plain:true"	style="float: left;"><b>驳回</b></a> 
+					<a id="btnDisagree"	href="javascript:void(0)" class="easyui-linkbutton"	data-options="iconCls:'icon-unit-delete',plain:true" style="float: left;"><b>不同意</b></a>
+				</td>
+				<td style="text-align: right; padding-right: 2px"><input id="ss" style="width: 240px;" class="easyui-searchbox" data-options="searcher:doSearch,prompt:'请输入查询内容',menu:'#ss_mm'"></input>
+					<div id="ss_mm" style="width: 80px;">
+						<div data-options="name:'form_num'">编号</div>
+						<div data-options="name:'at_name'">表单类型</div>
+						<div data-options="name:'create_username'">申请人</div>
+						<div data-options="name:'create_time'">申请日期</div>
+						<div data-options="name:'current_processstepname'">当前流程节点</div>
+						<div data-options="name:'next_processstepname'">下一流程节点</div>
+						<div data-options="name:'realName'">最后审批人</div>
+						<div data-options="name:'realName'">最后审批时间</div>
+					</div></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

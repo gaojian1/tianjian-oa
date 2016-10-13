@@ -1,0 +1,24 @@
+1. 如果一个方法中有对数据库增删改操作，建议将方法写入Service层中
+2. 如果一个方法中有对数据库进行多次增删改操作，并且需要事务支持，必须将方法写入Service中，否则事务无法生效。
+
+http://www.iteye.com/topic/1081739
+http://www.360doc.com/content/11/1026/13/4280915_159307646.shtml
+
+88888888
+
+pass1234
+
+http://blog.csdn.net/a1314517love/article/details/24183273
+
+        //var f=document.getElementById("File1").value;
+        //if(f=="")
+       // { alert("请上传图片");return false;}
+       // else
+       // {
+       // if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(f))
+       // {
+       //   alert("图片类型必须是.gif,jpeg,jpg,png中的一种")
+        //  return false;
+      //  }
+       // }
+        
