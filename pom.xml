@@ -21,11 +21,13 @@
         </excludes>
       </resource>
     </resources>
+                    
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.3</version>
         <configuration>
+	      <encoding>utf-8</encoding>
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
